@@ -1,113 +1,81 @@
-# Calculator Project — Unit Testing with JUnit 5
+Calculator — Unit & Mutation Testing
 
-This project contains a simple Java class `Calculator` with basic arithmetic operations 
-(addition, subtraction, multiplication, division, max, square root, positive check, and power).
+Repositorio de pruebas sobre la clase Calculator con JUnit 4, JaCoCo (cobertura) y PIT (mutation testing, opcional).
 
-The main objective is to **practice unit testing with JUnit 5**. Students are expected to 
-write test cases for all methods in `Calculator`, covering normal cases, boundary values, 
-and error cases (exceptions).
+Objetivos
 
-## Pre-conditions to Compile and Run
+Asegurar correctitud con tests unitarios siguiendo AAA.
 
-Before compiling and executing tests, make sure you have the following installed:
+Medir cobertura (líneas y ramas) con JaCoCo.
 
-- **Java JDK 17** or higher (`java -version` should display 17 or above)
-- **Maven 3.9+** *or* **Gradle 8+** (choose one build tool)
-- An IDE such as **IntelliJ IDEA**, **VS Code (with Java extensions)**, or **Eclipse**
+Validar robustez con mutation testing (PIT).
 
-## Project Structure
+Requisitos
 
-```
-project-root/
- ├─ src/
- │   ├─ main/java/com/seidoropentrends/classes/Calculator.java
- │   └─ test/java/com/seidoropentrends/classes/CalculatorTest.java
- ├─ pom.xml  
-```
+Java JDK 8+
 
-## How to Compile and Run Tests
+Maven 3.6+
 
-### Using Maven
-```bash
-mvn test
-```
+Sistema probado en Windows/PowerShell
 
-The build tool will automatically download JUnit 5 and run all unit tests in the `src/test/java` folder.
-------------------------------------------------------------------------------------------------
-Mutation Testing with PIT (Java)
+Uso rápido
 
-Mutation testing checks the real quality of your tests by modifying (mutating) the production code and verifying if the tests detect these changes.
+Ejecutar tests: mvn clean test
 
-If a test fails when a mutation is applied ⇒ mutant “killed”
+Informe JaCoCo: target/site/jacoco/index.html
 
-If tests still pass ⇒ mutant “survived”  (indicates weak tests or missing cases).
+Informe PIT (opcional): target/pit-reports/.../index.html
 
-1) Prerequisites
+Si el entorno no resuelve el plugin de JaCoCo automáticamente, usar:
+mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
+(Versiones alternativas: 0.8.11 / 0.8.10).
 
-Java JDK 17 or higher installed and configured in your PATH
+Alcance de las pruebas
 
-Maven 3.9+ or Gradle 8+
+Se cubren casos normales, límites y errores (excepciones) para:
 
-A project with JUnit tests that already pass successfully
+suma, resta, multiplica
 
-2) Configuration
-Maven (pom.xml)
+divideix: división truncada (p.ej., 7/2=3 si devuelve int), división por 0 → excepción
 
-Add the PIT plugin:
+potencia: 2^3=8, 5^0=1, 0^0=1 (según especificación), exponente negativo → excepción
 
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.pitest</groupId>
-      <artifactId>pitest-maven</artifactId>
-      <version>1.15.0</version>
-      <configuration>
-        <targetClasses>
-          <param>com.seidoropentrends.classes.*</param>
-        </targetClasses>
-        <targetTests>
-          <param>com.seidoropentrends.classes.*Test</param>
-        </targetTests>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
+arrelQuadrada: resultados con tolerancia (delta), input negativo → excepción
 
+esPositiu: positivos/negativos y decisión documentada para 0 (en este proyecto: false)
 
-pitest {
-  pitestVersion = '1.15.0'
-  targetClasses = ['com.seidoropentrends.classes.*']
-  targetTests = ['com.seidoropentrends.classes.*Test']
-}
+Criterios aplicados:
 
-3) Execution
-Maven
-mvn org.pitest:pitest-maven:mutationCoverage
+Patrón AAA (Arrange–Act–Assert)
 
+Particiones de equivalencia y valores límite
 
-4) Report Interpretation
+Nombrado descriptivo de tests
 
-After running PIT, an HTML report is generated:
+Evidencias
 
-Maven → target/pit-reports/YYYYMMDDHHMM/index.html
+docs/jacoco-cobertura.png — captura del índice de JaCoCo
 
-The report includes:
+docs/pit-mutation-score.png — captura de PIT (si se ejecuta)
 
-Killed: mutants eliminated by tests (good ✅).
+Los informes HTML completos quedan en target/site/jacoco/ y target/pit-reports/.
 
-Survived: mutants that survived (tests need improvement ❌).
+Entrega
 
-No coverage: lines not covered by tests.
+Incluye en el repo (o ZIP):
 
-Timed out: mutants that exceeded the maximum execution time.
+Código + tests
 
-5) Best Practices
+Carpeta docs/ con capturas
 
-Don’t aim blindly for 100% killed mutants (some are equivalent mutants that can’t be detected).
+Este README.md
 
-Use PIT to reveal weak spots in your test suite.
+Notas de calidad
 
-Add tests for boundary values and error cases that were previously missing.
+Tests deterministas y aislados
 
-Run mutation testing periodically (e.g., in major pull requests or CI pipelines).
+Cobertura de líneas y ramas
 
+Excepciones verificadas con asserts específicos
+
+Sin lógica innecesaria dentro de los tests
