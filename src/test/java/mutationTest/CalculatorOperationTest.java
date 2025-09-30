@@ -1,66 +1,64 @@
 package mutationTest;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.*;
 import static org.junit.Assert.*;
-
 import com.seidoropentrends.classes.Calculator;
 
-/**
- * Tests de Calculator (JUnit 4) siguiendo AAA, límites y excepciones.
- * Ajusta los asserts si tu contrato/métodos difieren (int/double).
- */
 public class CalculatorOperationTest {
 
+    // --- ciclo de vida a nivel de clase (una sola vez) ---
+    private static long t0;
+
+    @BeforeClass
+    public static void initOnce() {
+        t0 = System.currentTimeMillis();
+        // Aquí iniciarías recursos “caros” si existieran
+    }
+
+    @AfterClass
+    public static void cleanupOnce() {
+        long ms = System.currentTimeMillis() - t0;
+        System.out.println("Duración CalculatorOperationTest = " + ms + " ms");
+    }
+
+    // --- ciclo de vida a nivel de test (cada test) ---
     private Calculator calc;
 
     @Before
-    public void setUp() {
-        calc = new Calculator();
-    }
+    public void setUp() { calc = new Calculator(); }
+
+    @After
+    public void tearDown() { calc = null; }
 
     // -------- SUMA --------
-    @Test
-    public void suma_basico() {
-        int r = calc.suma(2, 3);
-        assertEquals(5, r);
-    }
-
-    @Test
-    public void suma_conNegativos() {
-        assertEquals(3, calc.suma(-2, 5));
+    @Test public void suma_basicos() {
+        assertEquals(5,  calc.suma(2, 3));
+        assertEquals(0,  calc.suma(-2, 2));
         assertEquals(-1, calc.suma(-3, 2));
-        assertEquals(0, calc.suma(0, 0));
     }
 
     // -------- RESTA --------
-    @Test
-    public void resta_basico() {
-        assertEquals(6, calc.resta(10, 4));
-    }
-
-    @Test
-    public void resta_conNegativos() {
-        assertEquals(3, calc.resta(-2, -5)); // -2 - (-5) = 3
+    @Test public void resta_casos() {
+        assertEquals(6,  calc.resta(10, 4));
+        assertEquals(3,  calc.resta(-2, -5));
         assertEquals(-7, calc.resta(-3, 4));
-        assertEquals(0, calc.resta(0, 0));
     }
 
     // -------- MULTIPLICA --------
-    @Test
-    public void multiplica_casos() {
-        assertEquals(0, calc.multiplica(7, 0));
+    @Test public void multiplica_casos() {
+        assertEquals(0,   calc.multiplica(7, 0));
         assertEquals(-12, calc.multiplica(-3, 4));
-        assertEquals(21, calc.multiplica(7, 3));
+        assertEquals(21,  calc.multiplica(7, 3));
     }
 
     // -------- DIVIDEIX --------
-    @Test
-    public void divideix_truncada_siEsEntera() {
-        // Si divideix devuelve int, se espera truncado: 7/2 = 3
-        // Si devuelve double, cambia a assertEquals(3.5, calc.divideix(7,2), 1e-9)
-        assertEquals(3, calc.divideix(7, 2));
+    @Test public void divideix_truncada_y_signos() {
+        // Si divideix devuelve double, cambia a: assertEquals(3.5, calc.divideix(7,2), 1e-9);
+        assertEquals(3,  calc.divideix(7, 2));
+        assertEquals(-3, calc.divideix(-7, 2));
+        assertEquals(-3, calc.divideix(7, -2));
+        assertEquals(3,  calc.divideix(-7, -2));
+        assertEquals(0,  calc.divideix(0, 5));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -69,37 +67,38 @@ public class CalculatorOperationTest {
     }
 
     // -------- POTENCIA --------
-    @Test
-    public void potencia_casosBasicos() {
-        assertEquals(8, calc.potencia(2, 3));   // 2^3
-        assertEquals(1, calc.potencia(5, 0));   // cualquier base ^0 = 1
-        assertEquals(1, calc.potencia(0, 0));   // según especificación de la práctica
+    @Test(timeout = 100)
+    public void potencia_casos() {
+        assertEquals(8, calc.potencia(2, 3));
+        assertEquals(1, calc.potencia(5, 0));
+        assertEquals(1, calc.potencia(0, 0));  // según la práctica
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void potencia_exponenteNegativo_lanzaExcepcion() {
+    public void potencia_exponenteNegativo_excepcion() {
         calc.potencia(2, -1);
     }
 
     // -------- ARREL QUADRADA --------
-    @Test
-    public void arrelQuadrada_basico() {
-        // Si devuelve double, usa delta
+    @Test public void arrelQuadrada_ok() {
         assertEquals(3.0, calc.arrelQuadrada(9.0), 1e-3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void arrelQuadrada_negativo_lanzaExcepcion() {
+    public void arrelQuadrada_negativo_excepcion() {
         calc.arrelQuadrada(-4.0);
     }
 
     // -------- ES POSITIU --------
-    @Test
-    public void esPositiu_casos() {
-        assertTrue(calc.esPositiu(4));
-        assertFalse(calc.esPositiu(-2));
-        // Contrato para 0: en este proyecto consideramos que 0 NO es positivo.
-        // Si tu implementación devuelve true para 0, cambia el assert siguiente.
-        assertFalse(calc.esPositiu(0));
+    @Test public void esPositiu_bordes() {
+        assertTrue(calc.esPositiu(1));
+        assertFalse(calc.esPositiu(-1));
+        assertFalse(calc.esPositiu(0)); // ajusta si tu contrato dice lo contrario
+    }
+
+    // (Opcional) ejemplo de test desactivado
+    @Ignore("Ejemplo: pendiente de decidir contrato para esPositiu(0)")
+    @Test public void test_temporalmente_desactivado() {
+        // no se ejecuta
     }
 }
