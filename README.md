@@ -1,14 +1,16 @@
 Calculator — Unit & Mutation Testing
 
-Repositorio de pruebas sobre la clase Calculator con JUnit 4, JaCoCo (cobertura) y PIT (mutation testing, opcional).
+Práctica de tests unitarios sobre la clase Calculator con JUnit 4, JaCoCo (cobertura) y PIT (mutation testing).
 
 Objetivos
 
-Asegurar correctitud con tests unitarios siguiendo AAA.
+Validar la corrección con tests unitarios siguiendo AAA (Arrange–Act–Assert).
 
 Medir cobertura (líneas y ramas) con JaCoCo.
 
-Validar robustez con mutation testing (PIT).
+Medir la fortaleza real de los tests con mutation testing (PIT).
+
+Cubrir casos normales, límites y excepciones.
 
 Requisitos
 
@@ -16,66 +18,101 @@ Java JDK 8+
 
 Maven 3.6+
 
-Sistema probado en Windows/PowerShell
+Entorno probado en Windows/PowerShell (terminal equivalente sirve).
 
-Uso rápido
+Estructura
+calculator-unit_mutation-testing/
+├─ src/
+│  ├─ main/java/com/seidoropentrends/classes/Calculator.java
+│  └─ test/java/mutationTest/CalculatorOperationTest.java
+│            (tests adicionales: CalculatorEdgeCasesTest.java, etc.)
+├─ docs/
+│  ├─ jacoco_cobertura.png
+│  └─ pit_mutation_score.png
+├─ pom.xml
+└─ README.md
 
-Ejecutar tests: mvn clean test
+Cómo ejecutar
 
-Informe JaCoCo: target/site/jacoco/index.html
+Tests unitarios
 
-Informe PIT (opcional): target/pit-reports/.../index.html
+mvn clean test
 
-Si el entorno no resuelve el plugin de JaCoCo automáticamente, usar:
+
+Informe de cobertura (JaCoCo)
+
 mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
-(Versiones alternativas: 0.8.11 / 0.8.10).
 
-Alcance de las pruebas
 
-Se cubren casos normales, límites y errores (excepciones) para:
+Abrir: target/site/jacoco/index.html
+Evidencia incluida: docs/jacoco_cobertura.png
+
+Mutation testing (PIT)
+
+mvn org.pitest:pitest-maven:mutationCoverage
+
+
+Abrir: target/pit-reports/<timestamp>/index.html
+Evidencia incluida: docs/pit_mutation_score.png
+
+Si tu entorno no resuelve la 0.8.12 de JaCoCo, usa 0.8.11 o 0.8.10 en el comando.
+
+Alcance de los tests
+
+Se prueban todos los métodos de Calculator con casos normales, bordes y errores esperados:
 
 suma, resta, multiplica
 
-divideix: división truncada (p.ej., 7/2=3 si devuelve int), división por 0 → excepción
+divideix: división truncada (entera), división por 0 → IllegalArgumentException
 
-potencia: 2^3=8, 5^0=1, 0^0=1 (según especificación), exponente negativo → excepción
+maxim: a>b, a==b, a<b
 
-arrelQuadrada: resultados con tolerancia (delta), input negativo → excepción
+arrelQuadrada: positivos (con delta), 0.0, negativo → IllegalArgumentException
 
-esPositiu: positivos/negativos y decisión documentada para 0 (en este proyecto: false)
+esPositiu: positivos/negativos y 0 (contrato documentado)
+
+potencia: 2^3=8, base^0=1, 0^0=1 (según enunciado), exponente negativo → IllegalArgumentException, exponente=1, bases especiales (1, -1, 0)
 
 Criterios aplicados:
 
-Patrón AAA (Arrange–Act–Assert)
+Patrón AAA.
 
-Particiones de equivalencia y valores límite
+Particiones de equivalencia y valores límite.
 
-Nombrado descriptivo de tests
+Verificación de excepciones y, cuando corresponde, mensaje.
 
-Evidencias
+Timeout razonable en operaciones de potencia (rendimiento básico).
 
-docs/jacoco-cobertura.png — captura del índice de JaCoCo
+Ciclo de vida de tests en JUnit 4: @BeforeClass/@AfterClass, @Before/@After, @Ignore.
 
-docs/pit-mutation-score.png — captura de PIT (si se ejecuta)
+Resultados (ejemplo orientativo)
 
-Los informes HTML completos quedan en target/site/jacoco/ y target/pit-reports/.
+Cobertura (JaCoCo): ver docs/jacoco_cobertura.png
 
-Entrega
+Mutation testing (PIT): ver docs/pit_mutation_score.png
 
-Incluye en el repo (o ZIP):
+Los informes HTML completos están en target/site/jacoco/ y target/pit-reports/.
 
-Código + tests
+Nota sobre el único mutante “Survived”
 
-Carpeta docs/ con capturas
+PIT reporta 1 mutación superviviente en Calculator.maxim(int a, int b) (mutador changed conditional boundary sobre a >= b).
+Esta mutación es equivalente: al cambiar >= por >, cuando a == b el resultado observable es el mismo entero (tanto a como b valen lo mismo). Se han probado igualdad y casos donde b es mayor, pero no es posible distinguir ambas versiones sin cambiar el contrato/API (p. ej., exponer qué operando fue elegido).
+Mutation Coverage final: 96% (25/26).
 
-Este README.md
+Cómo reproducir la evidencia
+
+mvn clean test
+
+JaCoCo: comando superior y abrir target/site/jacoco/index.html → capturar pantalla → guardar en docs/jacoco_cobertura.png.
+
+PIT: mvn org.pitest:pitest-maven:mutationCoverage → abrir último target/pit-reports/.../index.html → capturar pantalla → docs/pit_mutation_score.png.
 
 Notas de calidad
 
-Tests deterministas y aislados
+Tests deterministas y aislados (sin IO ni dependencias externas).
 
-Cobertura de líneas y ramas
+Cobertura de líneas y ramas significativa (no “assert vacíos”).
 
-Excepciones verificadas con asserts específicos
+Batería de bordes (0, negativos, igualdad, signos) para matar mutantes típicos.
 
-Sin lógica innecesaria dentro de los tests
+Código de tests legible y con nombres descriptivos.
