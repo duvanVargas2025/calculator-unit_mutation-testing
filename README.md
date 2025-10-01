@@ -40,8 +40,8 @@ mvn org.pitest:pitest-maven:mutationCoverage
 Open: target/pit-reports/<timestamp>/index.html
 Evidence included: docs/pit_mutation_score.png
 
-````🧪 Test Scope
-
+🧪 Test Scope
+````
 All Calculator methods are covered with normal, edge, and error cases:
 suma, resta, multiplica
 divideix: integer division (truncation), division by 0 → IllegalArgumentException
