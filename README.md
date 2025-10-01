@@ -56,11 +56,22 @@ Exception verification (and message when applicable).
 Reasonable timeout on power operation (basic performance).
 JUnit 4 lifecycle: @BeforeClass/@AfterClass, @Before/@After, @Ignore.
 
-📈 Results
+# 📈 Results
 
-Coverage (JaCoCo): see docs/jacoco_cobertura.png
-Mutation testing (PIT): see docs/pit_mutation_score.png
-Full HTML reports live in target/site/jacoco/ and target/pit-reports/.
+**JaCoCo Coverage**  
+![JaCoCo](docs/jacoco_cobertura.png)
+
+**PIT Mutation Score**  
+![PIT](docs/pit_mutation_score.png)
+
+### (Optional) Before improving tests
+![JaCoCo – initial](docs/jacoco_no_cobertura.png)
+
+
+> Full HTML reports live in `target/site/jacoco/` and `target/pit-reports/`.
+
+
+
 
 ℹ️ Note on the single “Survived” mutant
 
