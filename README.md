@@ -13,8 +13,8 @@ Java JDK 8+
 Maven 3.6+
 Tested on Windows/PowerShell (any equivalent terminal works).
 
-````📂 Project Structure
-
+📂 Project Structure
+````
 calculator-unit_mutation-testing/
 ├─ src/
 │  ├─ main/java/com/seidoropentrends/classes/Calculator.java
