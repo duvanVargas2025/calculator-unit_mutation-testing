@@ -64,7 +64,7 @@ JUnit 4 lifecycle: @BeforeClass/@AfterClass, @Before/@After, @Ignore.
 **PIT Mutation Score**  
 ![PIT](docs/pit_mutation_score.png)
 
-### (Optional) Before improving tests
+### Before improving tests
 ![JaCoCo – initial](docs/jacoco_no_cobertura.png)
 
 
