@@ -13,7 +13,7 @@ Java JDK 8+
 Maven 3.6+
 Tested on Windows/PowerShell (any equivalent terminal works).
 
-📂 Project Structure
+````📂 Project Structure
 
 calculator-unit_mutation-testing/
 ├─ src/
@@ -25,7 +25,7 @@ calculator-unit_mutation-testing/
 │  └─ pit_mutation_score.png
 ├─ pom.xml
 └─ README.md
-
+````
 ▶️ How to Run
 
 Unit tests
@@ -40,7 +40,7 @@ mvn org.pitest:pitest-maven:mutationCoverage
 Open: target/pit-reports/<timestamp>/index.html
 Evidence included: docs/pit_mutation_score.png
 
-🧪 Test Scope
+````🧪 Test Scope
 
 All Calculator methods are covered with normal, edge, and error cases:
 suma, resta, multiplica
@@ -55,7 +55,7 @@ Equivalence partitions and boundary values.
 Exception verification (and message when applicable).
 Reasonable timeout on power operation (basic performance).
 JUnit 4 lifecycle: @BeforeClass/@AfterClass, @Before/@After, @Ignore.
-
+````
 # 📈 Results
 
 **JaCoCo Coverage**  
