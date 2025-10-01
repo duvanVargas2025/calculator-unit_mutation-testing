@@ -1,118 +1,82 @@
 Calculator — Unit & Mutation Testing
+Practice of unit testing on the Calculator class using JUnit 4, JaCoCo (coverage), and PIT (mutation testing).
 
-Práctica de tests unitarios sobre la clase Calculator con JUnit 4, JaCoCo (cobertura) y PIT (mutation testing).
+🎯 Objectives
 
-Objetivos
+Validate correctness with unit tests following AAA (Arrange–Act–Assert).
+Measure coverage (lines and branches) with JaCoCo.
+Assess the real strength of the tests with PIT (mutation testing).
+Cover normal cases, boundary values, and exceptions.
 
-Validar la corrección con tests unitarios siguiendo AAA (Arrange–Act–Assert).
-
-Medir cobertura (líneas y ramas) con JaCoCo.
-
-Medir la fortaleza real de los tests con mutation testing (PIT).
-
-Cubrir casos normales, límites y excepciones.
-
-Requisitos
-
+🛠 Requirements
 Java JDK 8+
-
 Maven 3.6+
+Tested on Windows/PowerShell (any equivalent terminal works).
 
-Entorno probado en Windows/PowerShell (terminal equivalente sirve).
+📂 Project Structure
 
-Estructura
 calculator-unit_mutation-testing/
 ├─ src/
 │  ├─ main/java/com/seidoropentrends/classes/Calculator.java
 │  └─ test/java/mutationTest/CalculatorOperationTest.java
-│            (tests adicionales: CalculatorEdgeCasesTest.java, etc.)
+│        (additional tests: CalculatorEdgeCasesTest.java, etc.)
 ├─ docs/
 │  ├─ jacoco_cobertura.png
 │  └─ pit_mutation_score.png
 ├─ pom.xml
 └─ README.md
 
-Cómo ejecutar
+▶️ How to Run
 
-Tests unitarios
-
+Unit tests
 mvn clean test
-
-
-Informe de cobertura (JaCoCo)
-
+Coverage report (JaCoCo)
 mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
-
-
-Abrir: target/site/jacoco/index.html
-Evidencia incluida: docs/jacoco_cobertura.png
-
+Open: target/site/jacoco/index.html
+Evidence included: docs/jacoco_cobertura.png
+If your environment cannot resolve 0.8.12, use 0.8.11 or 0.8.10.
 Mutation testing (PIT)
-
 mvn org.pitest:pitest-maven:mutationCoverage
+Open: target/pit-reports/<timestamp>/index.html
+Evidence included: docs/pit_mutation_score.png
 
+🧪 Test Scope
 
-Abrir: target/pit-reports/<timestamp>/index.html
-Evidencia incluida: docs/pit_mutation_score.png
-
-Si tu entorno no resuelve la 0.8.12 de JaCoCo, usa 0.8.11 o 0.8.10 en el comando.
-
-Alcance de los tests
-
-Se prueban todos los métodos de Calculator con casos normales, bordes y errores esperados:
-
+All Calculator methods are covered with normal, edge, and error cases:
 suma, resta, multiplica
+divideix: integer division (truncation), division by 0 → IllegalArgumentException
+maxim: a > b, a == b, a < b
+arrelQuadrada: positive inputs (with delta), 0.0, negative → IllegalArgumentException
+esPositiu: positives / negatives and 0 (contract documented)
+potencia: 2^3 = 8, base^0 = 1, 0^0 = 1 (per assignment), negative exponent → IllegalArgumentException, exponent = 1, special bases (1, -1, 0)
+Applied criteria
+AAA pattern.
+Equivalence partitions and boundary values.
+Exception verification (and message when applicable).
+Reasonable timeout on power operation (basic performance).
+JUnit 4 lifecycle: @BeforeClass/@AfterClass, @Before/@After, @Ignore.
 
-divideix: división truncada (entera), división por 0 → IllegalArgumentException
+📈 Results
 
-maxim: a>b, a==b, a<b
+Coverage (JaCoCo): see docs/jacoco_cobertura.png
+Mutation testing (PIT): see docs/pit_mutation_score.png
+Full HTML reports live in target/site/jacoco/ and target/pit-reports/.
 
-arrelQuadrada: positivos (con delta), 0.0, negativo → IllegalArgumentException
+ℹ️ Note on the single “Survived” mutant
 
-esPositiu: positivos/negativos y 0 (contrato documentado)
+PIT reports 1 surviving mutation in Calculator.maxim(int a, int b) (mutator changed conditional boundary on a >= b).
+This mutation is equivalent: changing >= to > yields the same observable result when a == b (both values are identical). Equality and b-greater cases are tested, but differentiating these implementations would require changing the API/contract (e.g., exposing which operand was chosen).
+Final Mutation Coverage: 96% (25/26).
 
-potencia: 2^3=8, base^0=1, 0^0=1 (según enunciado), exponente negativo → IllegalArgumentException, exponente=1, bases especiales (1, -1, 0)
-
-Criterios aplicados:
-
-Patrón AAA.
-
-Particiones de equivalencia y valores límite.
-
-Verificación de excepciones y, cuando corresponde, mensaje.
-
-Timeout razonable en operaciones de potencia (rendimiento básico).
-
-Ciclo de vida de tests en JUnit 4: @BeforeClass/@AfterClass, @Before/@After, @Ignore.
-
-Resultados (ejemplo orientativo)
-
-Cobertura (JaCoCo): ver docs/jacoco_cobertura.png
-
-Mutation testing (PIT): ver docs/pit_mutation_score.png
-
-Los informes HTML completos están en target/site/jacoco/ y target/pit-reports/.
-
-Nota sobre el único mutante “Survived”
-
-PIT reporta 1 mutación superviviente en Calculator.maxim(int a, int b) (mutador changed conditional boundary sobre a >= b).
-Esta mutación es equivalente: al cambiar >= por >, cuando a == b el resultado observable es el mismo entero (tanto a como b valen lo mismo). Se han probado igualdad y casos donde b es mayor, pero no es posible distinguir ambas versiones sin cambiar el contrato/API (p. ej., exponer qué operando fue elegido).
-Mutation Coverage final: 96% (25/26).
-
-Cómo reproducir la evidencia
+🔁 Reproduce Evidence
 
 mvn clean test
+JaCoCo → command above → open target/site/jacoco/index.html → screenshot → docs/jacoco_cobertura.png
+PIT → mvn org.pitest:pitest-maven:mutationCoverage → open latest target/pit-reports/.../index.html → screenshot → docs/pit_mutation_score.png
 
-JaCoCo: comando superior y abrir target/site/jacoco/index.html → capturar pantalla → guardar en docs/jacoco_cobertura.png.
+✅ Quality Notes
 
-PIT: mvn org.pitest:pitest-maven:mutationCoverage → abrir último target/pit-reports/.../index.html → capturar pantalla → docs/pit_mutation_score.png.
-
-Notas de calidad
-
-Tests deterministas y aislados (sin IO ni dependencias externas).
-
-Cobertura de líneas y ramas significativa (no “assert vacíos”).
-
-Batería de bordes (0, negativos, igualdad, signos) para matar mutantes típicos.
-
-Código de tests legible y con nombres descriptivos.
+Tests are deterministic and isolated (no IO or external deps).
+Meaningful line/branch coverage (no empty asserts).
+Strong edge-case suite (0, negatives, equality, sign combinations) to kill typical mutants.
+Clear, descriptive test names.
